@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: sample-boba-shop-be
+spec:
+  replicas: 1
+  serviceName: mysql
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: tpc
+              protocol: TCP
+              containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom: 
+               secretKeyRef: 
+                key: ROOT_PASSWORD
+                name: mysql-secrect
+            - name: MYSQL_DATABASE
+              value: bobashop
+          volumeMounts:
+            - name: marttp-pvc-boba-be
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: marttp-pvc-boba-be
+        namespace: sample-boba-shop-be
+      spec:
+        storageClassName: "REPLACE_YOUR_STORAGE_CLASS_NAME"
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Secret
+metadata: 
+  name: mysql-secrect
+  namespace: sample-boba-shop-be
+type: Opaque
+data:
+   ROOT_PASSWORD: cGFzc3dvcmQxMjM0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: sample-boba-shop-be
+spec:
+  type: ClusterIP
+  internalTrafficPolicy: Cluster
+  clusterIP: None
+  ports:
+  - name: mysql
+    port: 3306
+    protocol: TCP
+    targetPort: 3306
+  selector:
+    app: mysql

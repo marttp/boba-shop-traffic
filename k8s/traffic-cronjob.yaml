@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: traffic-cronjob
+  namespace: sample-boba-shop-be
+spec:
+  # Expect traffic run every minute
+  schedule: '*/1 * * * *'
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: boba-traffic
+              image: marttp/boba-traffic-js
+              imagePullPolicy: IfNotPresent
+              env:
+              - name: BASE_URL
+                value: http://boba-be-svc.sample-boba-shop-be.svc.cluster.local:50080
+          restartPolicy: OnFailure

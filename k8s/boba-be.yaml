@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boba-be
+  namespace: sample-boba-shop-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: boba-be
+  template:
+    metadata:
+      labels:
+        app: boba-be
+    spec:
+      containers:
+      - name: boba-shop-be
+        image: marttp/boba-shop-be
+        resources:
+          requests:
+            cpu: 300m
+            memory: 512Mi
+          limits:
+            cpu: 300m
+            memory: 512Mi
+        ports:
+        - containerPort: 8080
+          name: boba-shop-be
+          protocol: TCP
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: dev
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: boba-be-cm
+              key: DB_URL
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: boba-be-secrect
+              key: DB_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: boba-be-secrect
+              key: DB_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: boba-be-svc
+  namespace: sample-boba-shop-be
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: boba-shop-be
+    port: 50080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: boba-be
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Secret
+metadata: 
+  name: boba-be-secrect
+  namespace: sample-boba-shop-be
+type: Opaque
+data:
+   DB_USERNAME: cm9vdA==
+   DB_PASSWORD: cGFzc3dvcmQxMjM0
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: boba-be-cm
+  namespace: sample-boba-shop-be
+data:
+  DB_URL: jdbc:mysql://mysql.sample-boba-shop-be.svc.cluster.local:3306/bobashop

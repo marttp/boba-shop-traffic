@@ -1,0 +1,1 @@
+./gradlew jib --image=marttp/boba-shop-be
