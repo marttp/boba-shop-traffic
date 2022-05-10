@@ -11,5 +11,5 @@
 ## High level Design
 ![High Level Design](high-level-design.png "High Level Design")
 
-## ER-Diagram
+## Relation
 ![ER-Diagram](erd.drawio.png "ER-Diagram")
