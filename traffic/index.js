@@ -6,7 +6,7 @@ const trigger = async () => {
   const now = new Date();
   if (isWeekend(now)) {
     // Peak time => assume can multiply 2 time
-    base *= getRandomInt(2);
+    base *= getRandomInt(2) + 1;
   }
   await sendTraffic(base);
   console.log(`Send Traffice success! at ${now}`);
