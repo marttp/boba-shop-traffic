@@ -47,7 +47,7 @@ const randomPickMenu = (menus) => {
 };
 
 const generateMenuAmount = (menu) => {
-  const amount = getRandomInt(3) + 1;
+  const amount = getRandomInt(2) + 1;
   return {
     menuId: menu.id,
     amount,

@@ -2,7 +2,7 @@ const { getRandomInt, sendTraffic } = require('./helper');
 const { isWeekend } = require('date-fns');
 
 const trigger = async () => {
-  let base = 3 + getRandomInt(2);
+  let base = 3;
   const now = new Date();
   if (isWeekend(now)) {
     // Peak time => assume can multiply 2 time
