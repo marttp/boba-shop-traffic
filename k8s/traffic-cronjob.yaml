@@ -5,7 +5,7 @@ metadata:
   namespace: sample-boba-shop-be
 spec:
   # Expect traffic run every minute
-  schedule: '*/1 * * * *'
+  schedule: '*/1 7-21 * * *'
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 0
   jobTemplate:
