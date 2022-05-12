@@ -1,20 +1,9 @@
-#spring:
-#  datasource:
-#    url: ${DB_URL}
-#    username: ${DB_USERNAME}
-#    password: ${DB_PASSWORD}
-
 spring:
   jpa:
     hibernate:
       ddl-auto: update
 
-# Example
-#db:
-#  url: jdbc:mysql://localhost:33066/bobashop
-#  username: root
-#  password: password1234
-
 cron:
-  expression: 0 0 0 * * *
-#    0 */1 7-21 * * *
+  expression: 0 */5 * * * *
+  popular: 0 0 0 * * *
+  weekly-del-popular: 0 0 0 * * MON

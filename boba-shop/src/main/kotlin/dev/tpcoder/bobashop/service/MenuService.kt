@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 class MenuService(private val menuRepository: MenuRepository) {
     private val logger: Logger = LoggerFactory.getLogger(MenuService::class.java)
 
-    fun getMenus(): List<Menu> = menuRepository.findAll();
+    fun getMenus(): List<Menu> = menuRepository.findAll()
 
-    fun addMenu(menu: Menu) = menuRepository.save(menu);
+    fun addMenu(menu: Menu) = menuRepository.save(menu)
 }
