@@ -2,6 +2,7 @@ package dev.tpcoder.bobashop.service
 
 import dev.tpcoder.bobashop.model.Income
 import dev.tpcoder.bobashop.model.Menu
+import dev.tpcoder.bobashop.model.MenuCounter
 import dev.tpcoder.bobashop.model.Popular
 import dev.tpcoder.bobashop.repository.*
 import org.slf4j.Logger
@@ -42,6 +43,7 @@ class DeleteScheduler(
         orderMenuList.forEach {
             val profit = menuMap.getOrDefault(it.menu!!.id, BigDecimal.ZERO)
             sumPrice.add(profit!!.times(it.amount.toBigDecimal()))
+            menuCounter.putIfAbsent(it.menu!!.id, MenuCounter(menu = it.menu!!, count = 0))
             menuCounter[it.menu!!.id]!!.count.plus(1)
         }
         menuCounterRepository.saveAll(menuCounter.values)
