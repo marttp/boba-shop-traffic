@@ -4,6 +4,6 @@ spring:
       ddl-auto: update
 
 cron:
-  expression: 0 */5 * * * *
+  expression: 20 */5 * * * *
   popular: 0 0 0 * * *
   weekly-del-popular: 0 0 0 * * MON

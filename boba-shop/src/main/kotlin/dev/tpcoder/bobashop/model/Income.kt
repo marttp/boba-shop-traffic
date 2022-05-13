@@ -20,5 +20,5 @@ data class Income(
     val year: String,
 
     @Column(nullable = false)
-    val price: BigDecimal
+    var price: BigDecimal
 )

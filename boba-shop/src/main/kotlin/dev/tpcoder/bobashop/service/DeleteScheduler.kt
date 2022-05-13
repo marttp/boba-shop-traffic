@@ -34,18 +34,22 @@ class DeleteScheduler(
         logger.info("Start gathering information to price - {}", now)
 
         val menuMap = menuRepository.findAll().associate { it.id to it.basePrice }
-        val sumPrice = BigDecimal.ZERO
+        logger.info("menuMap: $menuMap")
+        var sumPrice = BigDecimal("0")
         val orderMenuList = orderMenuRepository.findAll()
         val menuCounter = menuCounterRepository.findAll()
-            .associateBy { it.menu!!.id }
+            .associateBy { it.menu!!.id!! }
             .toMutableMap()
-
+        logger.info("menuCounter before process: $menuCounter")
         orderMenuList.forEach {
-            val profit = menuMap.getOrDefault(it.menu!!.id, BigDecimal.ZERO)
-            sumPrice.add(profit!!.times(it.amount.toBigDecimal()))
-            menuCounter.putIfAbsent(it.menu!!.id, MenuCounter(menu = it.menu!!, count = 0))
-            menuCounter[it.menu!!.id]!!.count.plus(1)
+            val profit = menuMap[it.menu!!.id!!]
+            val currentProfit = profit!!.times(it.amount.toBigDecimal())
+            sumPrice = sumPrice.add(currentProfit)
+            menuCounter.putIfAbsent(it.menu!!.id!!, MenuCounter(menu = it.menu!!, count = 0))
+            menuCounter[it.menu!!.id!!]!!.count = menuCounter[it.menu!!.id!!]!!.count + it.amount
         }
+        logger.info("menuCounter after process: $menuCounter")
+        logger.info("profit this round: $sumPrice")
         menuCounterRepository.saveAll(menuCounter.values)
 
         val day = now.dayOfMonth.toString()
@@ -54,7 +58,8 @@ class DeleteScheduler(
         val queryIncome =
             incomeRepository.findByDayAndMonthAndYear(day = day, month = month, year = year)
         if (queryIncome != null) {
-            queryIncome.price.add(sumPrice)
+            logger.info("Existing: $queryIncome")
+            queryIncome.price = queryIncome.price.add(sumPrice)
             incomeRepository.save(queryIncome)
         } else {
             val income = Income(
@@ -67,7 +72,9 @@ class DeleteScheduler(
             incomeRepository.save(income)
         }
         // For manage storage size in Development only
+        logger.info("Delete all orderMenu")
         orderMenuRepository.deleteAll()
+        logger.info("Delete all order")
         orderRepository.deleteAll()
     }
 
