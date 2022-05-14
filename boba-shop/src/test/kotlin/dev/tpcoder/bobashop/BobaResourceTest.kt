@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
-class BobaResourceTest {
+internal class BobaResourceTest {
 
     private val menuService: MenuService = mockk()
 
