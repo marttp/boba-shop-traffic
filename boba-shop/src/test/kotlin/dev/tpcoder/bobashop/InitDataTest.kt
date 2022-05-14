@@ -16,9 +16,9 @@ class InitDataTest {
     @Test
     fun whenExisting_doNothing() {
         val initList = listOf(
-            Menu(name = "Taiwan Milk Tea", basePrice = BigDecimal("30.0")),
-            Menu(name = "Brown Sugar Milk Tea", basePrice = BigDecimal("40.0")),
-            Menu(name = "Cocoa Milk Tea", basePrice = BigDecimal("30.0")),
+            Menu(id = 1, name = "Taiwan Milk Tea", basePrice = BigDecimal("30.0")),
+            Menu(id = 2, name = "Brown Sugar Milk Tea", basePrice = BigDecimal("40.0")),
+            Menu(id = 3, name = "Cocoa Milk Tea", basePrice = BigDecimal("30.0")),
         )
         every { menuRepository.findAll() } returns initList
         initData.run(args = null)

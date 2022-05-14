@@ -6,4 +6,3 @@ spring:
 cron:
   expression: 20 */5 * * * *
   popular: 0 0 0 * * *
-  weekly-del-popular: 0 0 0 * * MON
