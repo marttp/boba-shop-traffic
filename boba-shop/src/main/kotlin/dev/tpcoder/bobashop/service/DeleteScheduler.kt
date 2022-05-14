@@ -104,9 +104,4 @@ class DeleteScheduler(
         popularRepository.deleteAll()
         popularRepository.saveAll(result)
     }
-
-    @Scheduled(cron = "\${cron.weekly-del-popular}")
-    fun cronScheduleTaskForClearPopular() {
-        popularRepository.deleteAll()
-    }
 }

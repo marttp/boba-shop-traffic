@@ -4,11 +4,14 @@ import dev.tpcoder.bobashop.model.Menu
 import dev.tpcoder.bobashop.model.Order
 import dev.tpcoder.bobashop.model.OrderMenu
 import dev.tpcoder.bobashop.model.dto.MenuWithOption
+import dev.tpcoder.bobashop.model.dto.OrderPayload
 import dev.tpcoder.bobashop.repository.OrderMenuRepository
 import dev.tpcoder.bobashop.repository.OrderRepository
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
@@ -23,13 +26,26 @@ internal class OrderServiceTest {
     @Test
     @DisplayName("Order Ingress - Success")
     fun whenOrderIncoming_returnSuccess() {
-
+        val orderPayload = OrderPayload(
+            userId = "user1",
+            menus = listOf(MenuWithOption(1, 2))
+        )
+        val spyOrderService = spyk(orderService)
+        every { spyOrderService.addOrder(any(), any()) } returns Unit
+        spyOrderService.orderIngress(orderPayload)
+        verify(exactly = 1) { spyOrderService.addOrder(any(), any()) }
     }
 
     @Test
     @DisplayName("Order limitation exceed")
     fun whenOrderIncomingTooMuch_returnError() {
-
+        val orderPayload = OrderPayload(
+            userId = "user1",
+            menus = MutableList(21) { MenuWithOption(1, 2) }
+        )
+        Assertions.assertThrows(InternalError::class.java) {
+            orderService.orderIngress(orderPayload)
+        }
     }
 
     @Test
